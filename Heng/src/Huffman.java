@@ -63,44 +63,52 @@ public class Huffman {
 
   public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
-    System.out.print("Enter the text to compress: ");
-    String text = scanner.nextLine();
-    // Calculate the frequency of each character in the text
-    int[][] charFreqs = new int[256][256];
-    String[] chunks = text.split("(?<=\\G.{" + 10 + "})");
-    int i = 0;
-    for (char ch : chunks[i].toCharArray()) {
-      charFreqs[ch][i]++;
-      i++;
-    }
+    String loop;
+    String ans = "yes";
+    do {
+      System.out.print("Enter the text to compress: ");
+      String text = scanner.nextLine();
+      // Divide text string to different parts
+      int dIndex = 15;
+      String[] chunks = text.split("(?<=\\G.{" + dIndex + "})");
 
-    // Build the Huffman tree
-    for (int n = 0; n < charFreqs.length; n++) {
-      Node root = buildTree(charFreqs[n]);
-
-      // Generate the Huffman codes
-      Map<Character, String> codes = getCodes(root);
-
-      // Encode the text using the Huffman codes
-      StringBuilder encoded = new StringBuilder();
-      int j = 0;
-      for (char ch : chunks[j].toCharArray()) {
-        encoded.append(codes.get(ch));
-        j++;
+      // Calculate the frequency of each character in the text
+      int[][] charFreqs = new int[256][256];
+      for (int i = 0; i <= text.length() / dIndex; i++) {
+        for (char ch : chunks[i].toCharArray()) {
+          charFreqs[i][ch]++;
+        }
       }
+      int originalBits = 0;
+      int compressedBits = 0;
+      StringBuilder encoded = new StringBuilder();
+      // Build the Huffman tree
+      for (int i = 0; i <= text.length() / dIndex; i++) {
+        Node root = buildTree(charFreqs[i]);
 
-// Calculate the number of bits without compression
-      int originalBits = text.length() * 8;
+        // Generate the Huffman codes
+        Map<Character, String> codes = getCodes(root);
 
-// Calculate the number of bits with compression
-      int compressedBits = encoded.length();
+        // Encode the text using the Huffman codes
+        for (char ch : chunks[i].toCharArray()) {
+          encoded.append(codes.get(ch));
+          System.out.println(encoded);
+        }
 
-      System.out.println();
+        // Calculate the number of bits without compression
+        originalBits = text.length() * 8;
+
+        // Calculate the number of bits with compression
+        compressedBits = encoded.length();
+      }
       System.out.println("Number of bits without compression: " + originalBits);
       System.out.println("Number of bits with compression: " + compressedBits);
-      System.out.println();
-      System.out.println(encoded);
-    }
+      for (int i = 0; i <= text.length() / dIndex; i++) {
+        System.out.println(chunks[i]);
+      }
+      System.out.println("Do you want to try another text? (yes/no)");
+      loop = scanner.nextLine();
+    } while (loop.equals(ans));
   }
 }
 

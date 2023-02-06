@@ -1,23 +1,96 @@
-import java.util.Scanner;
-import java.util.function.Consumer;
+import java.util.*;
+
 public class LetterCounter {
-  public static void main(String[] args) {
-    Scanner scanner = new Scanner(System.in);
-    System.out.print("Enter a string: ");
-    String input = scanner.nextLine();
-    input = input.toLowerCase();
-    int[] letterCounts = new int[26];
-    Consumer<Character> countLetters = (c) -> {
-      if (c >= 'a' && c <= 'z') {
-        letterCounts[c - 'a']++;
-      }
-    };
-    input.chars().mapToObj(i -> (char)i).forEach(countLetters);
-    for (int i = 0; i < 26; i++) {
-      char c = (char)('a' + i);
-      if (letterCounts[i] > 1) {
-          System.out.println(c + ": " + letterCounts[i] + " " + Integer.toBinaryString(c));
+  // Inner class to represent a node in the Huffman tree
+  static class Node implements Comparable<Node> {
+    char ch;
+    int freq;
+    Node left;
+    Node right;
+
+    Node(char ch, int freq, Node left, Node right) {
+      this.ch = ch;
+      this.freq = freq;
+      this.left = left;
+      this.right = right;
+    }
+
+    // Compare nodes based on their frequency
+    public int compareTo(Node other) {
+      return this.freq - other.freq;
+    }
+  }
+
+  // Method to build the Huffman tree
+  static Node buildTree(int[] charFreqs) {
+    PriorityQueue<Node> queue = new PriorityQueue<>();
+    // Create leaf nodes for each character and add them to the priority queue
+    for (int i = 0; i < charFreqs.length; i++) {
+      if (charFreqs[i] > 0) {
+        queue.add(new Node((char)i, charFreqs[i], null, null));
       }
     }
+    // Continuously merge the lowest frequency nodes until there is only one node left (the root of the tree)
+    while (queue.size() > 1) {
+      Node left = queue.poll();
+      Node right = queue.poll();
+      Node parent = new Node('\0', left.freq + right.freq, left, right);
+      queue.add(parent);
+    }
+    return queue.poll();
+  }
+
+  // Method to generate the Huffman codes
+  static Map<Character, String> getCodes(Node root) {
+    Map<Character, String> codes = new HashMap<>();
+    generateCodes(root, "", codes);
+    return codes;
+  }
+
+  // Recursive method to generate the codes
+  static void generateCodes(Node node, String code, Map<Character, String> codes) {
+    if (node.left == null && node.right == null) {
+      // Leaf node, add the code to the map
+      codes.put(node.ch, code);
+      return;
+    }
+    // Recurse on the left and right child
+    generateCodes(node.left, code + '0', codes);
+    generateCodes(node.right, code + '1', codes);
+  }
+
+  public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+    System.out.print("Enter the text to compress: ");
+    String text = scanner.nextLine();
+
+    // Calculate the frequency of each character in the text
+    int[] charFreqs = new int[256];
+    for (char ch : text.toCharArray()) {
+      charFreqs[ch]++;
+    }
+
+    // Build the Huffman tree
+    Node root = buildTree(charFreqs);
+
+    // Generate the Huffman codes
+    Map<Character, String> codes = getCodes(root);
+
+    // Encode the text using the Huffman codes
+    StringBuilder encoded = new StringBuilder();
+    for (char ch : text.toCharArray())
+    {
+      encoded.append(codes.get(ch));
+    }
+
+    // Calculate the number of bits without compression
+    int originalBits = text.length() * 8;
+
+    // Calculate the number of bits with compression
+    int compressedBits = encoded.length();
+
+    System.out.println("Number of bits without compression: " + originalBits);
+    System.out.println("Number of bits with compression: " + compressedBits);
+    System.out.println(encoded);
   }
 }
