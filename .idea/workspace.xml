@@ -4,15 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bdf1b6ea-fdbc-496f-8912-63075a8a4811" name="Changes" comment="initialized Object[] values">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="bdf1b6ea-fdbc-496f-8912-63075a8a4811" name="Changes" comment="initialized Object[] values, set and insert methods added">
+      <change afterPath="$PROJECT_DIR$/DynamicArrayTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DynamicArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/DynamicArray.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -34,10 +41,24 @@
     "jdk.selected.JAVA_MODULE": "19",
     "last_opened_file_path": "/Users/vlad/IdeaProjects/LibraryERP",
     "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.3091954"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="DynamicArrayTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="test.DynamicArrayTest" />
+      <module name="LibraryERP" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.DynamicArrayTest" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -54,7 +75,28 @@
       <option name="project" value="LOCAL" />
       <updated>1683844002264</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="initialized Object[] values, set and insert methods added">
+      <created>1683845208283</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1683845208283</updated>
+    </task>
+    <task id="LOCAL-00003" summary="initialized Object[] values, set and insert methods added">
+      <created>1683845389706</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1683845389706</updated>
+    </task>
+    <task id="LOCAL-00004" summary="initialized Object[] values, set and insert methods added">
+      <created>1683845452504</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1683845452504</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -71,6 +113,7 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="initialized Object[] values" />
-    <option name="LAST_COMMIT_MESSAGE" value="initialized Object[] values" />
+    <MESSAGE value="initialized Object[] values, set and insert methods added" />
+    <option name="LAST_COMMIT_MESSAGE" value="initialized Object[] values, set and insert methods added" />
   </component>
 </project>
