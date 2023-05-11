@@ -1,3 +1,4 @@
+import java.util.Arrays;
 
 public class DynamicArray {
 
@@ -11,7 +12,7 @@ public class DynamicArray {
     isEmpty() -> boolean
    */
 
-  private Object[] values;
+  private Object[] values = {};
   private int size;
 
   public void add(Object value){
@@ -27,7 +28,23 @@ public class DynamicArray {
     values[position] = value;
 
   }
-  private void resizeIfNeeded() {
+  public void insert(Object value, int position) {
+     if (position > size) {
+         System.err.println("IllegalPositionArgument: " + position);
+         return;
+     } else if (position == size) {
+       add(value);
+     } else {
+       resizeIfNeeded();
+       System.arraycopy(values, position, values, position + 1, size - position);
+       values[position] = value;
+       size++;
+     }
 
+  }
+  private void resizeIfNeeded() {
+    if (values.length == size) {
+      values = Arrays.copyOf(values, size * 2 + 1);
+    }
   }
 }
