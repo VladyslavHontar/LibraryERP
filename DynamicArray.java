@@ -31,7 +31,6 @@ public class DynamicArray {
   public void insert(Object value, int position) {
      if (position > size) {
          System.err.println("IllegalPositionArgument: " + position);
-         return;
      } else if (position == size) {
        add(value);
      } else {
