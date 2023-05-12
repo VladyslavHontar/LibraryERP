@@ -8,7 +8,6 @@ public class DynamicArrayTest {
             dynamicArray.add(s);
         }
         System.out.println(dynamicArray);
-
         System.out.println(dynamicArray.getSize());
         System.out.println(dynamicArray.isEmpty());
 
