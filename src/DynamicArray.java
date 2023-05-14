@@ -78,21 +78,17 @@ public class DynamicArray implements Iterable{
   }
   @Override
   public Iterator iterator() {
-    return new DynamicArrayIterator(this);
+    return new DynamicArrayIterator();
   }
-  private static class DynamicArrayIterator implements Iterator {
-    private final DynamicArray array;
+  private class DynamicArrayIterator implements Iterator {
     private int pointer;
-    private DynamicArrayIterator(DynamicArray array) {
-      this.array = array;
-    }
     @Override
     public boolean hasNext() {
-      return pointer != array.size;
+      return pointer != size;
     }
     @Override
     public Object next() {
-      return array.values[pointer++];
+      return values[pointer++];
     }
   }
 }
