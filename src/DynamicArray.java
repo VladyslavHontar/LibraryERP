@@ -1,6 +1,7 @@
 import java.util.Arrays;
+import java.util.Iterator;
 
-public class DynamicArray {
+public class DynamicArray implements Iterable{
   private Object[] values;
   private int size;
 
@@ -70,9 +71,29 @@ public class DynamicArray {
       values = Arrays.copyOf(values, size * 2 + 1);
     }
   }
+
   @Override
   public String toString() {
     return Arrays.toString(values);
+  }
+  @Override
+  public Iterator iterator() {
+    return new DynamicArrayIterator(this);
+  }
+  private static class DynamicArrayIterator implements Iterator {
+    private final DynamicArray array;
+    private int pointer;
+    private DynamicArrayIterator(DynamicArray array) {
+      this.array = array;
+    }
+    @Override
+    public boolean hasNext() {
+      return pointer != array.size;
+    }
+    @Override
+    public Object next() {
+      return array.values[pointer++];
+    }
   }
 }
 
