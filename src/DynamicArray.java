@@ -1,3 +1,4 @@
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -8,12 +9,8 @@ import java.util.Iterator;
 @NoArgsConstructor
 public class DynamicArray implements Iterable{
   private Object[] values = new Object[0];
-  private int size = 0;
+  private @Getter int size = 0;
 
-
-  public int getSize() {
-    return size;
-  }
   public void add(Object value){
     resizeIfNeeded();
     values[size++] = value;
