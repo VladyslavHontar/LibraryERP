@@ -5,8 +5,8 @@ import lombok.ToString;
 import java.util.Arrays;
 import java.util.Iterator;
 
-@ToString
 @NoArgsConstructor
+@ToString
 public class DynamicArray implements Iterable{
   private Object[] values = new Object[0];
   private @Getter int size = 0;
