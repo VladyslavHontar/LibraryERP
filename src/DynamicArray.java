@@ -1,14 +1,15 @@
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.util.Arrays;
 import java.util.Iterator;
 
+@ToString
+@NoArgsConstructor
 public class DynamicArray implements Iterable{
-  private Object[] values;
-  private int size;
+  private Object[] values = new Object[0];
+  private int size = 0;
 
-  public DynamicArray() {
-    values = new Object[0];
-    size = 0;
-  }
 
   public int getSize() {
     return size;
@@ -72,10 +73,6 @@ public class DynamicArray implements Iterable{
     }
   }
 
-  @Override
-  public String toString() {
-    return Arrays.toString(values);
-  }
   @Override
   public Iterator iterator() {
     return new DynamicArrayIterator();
