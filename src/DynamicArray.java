@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 @NoArgsConstructor
 @ToString
+@SuppressWarnings("unused")
 public class DynamicArray implements Iterable{
   private Object[] values = new Object[0];
   private @Getter int size = 0;
