@@ -21,6 +21,9 @@ public class DynamicArrayTest {
     System.out.println(dynamicArray.contains("Q"));
 
     dynamicArray.add("A", 1);
+    dynamicArray.set("A", 0);
+    System.out.println(dynamicArray);
+    System.out.println(dynamicArray.get(0));
   }
 }
 
