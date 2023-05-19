@@ -1,0 +1,28 @@
+@startuml
+'https://plantuml.com/object-diagram
+
+hide circle
+
+skinparam linetype ortho
+
+entity "Book" as Book {
+    id: long
+    --
+    isbn: String
+    title: String
+    author: String
+    year: int
+    price: double
+    count: int
+}
+
+entity "User" as User {
+    id: long
+    --
+    username: String
+    password: String
+    type: User.Type
+}
+
+Book}|--|{User
+@enduml
