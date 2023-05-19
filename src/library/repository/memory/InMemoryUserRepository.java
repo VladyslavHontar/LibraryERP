@@ -1,8 +1,10 @@
-package library.repository;
+package library.repository.memory;
 
 import library.domain.User;
+import library.repository.DynamicArray;
+import library.repository.UserRepository;
 
-public class InMemoryUserRepository implements UserRepository{
+public class InMemoryUserRepository implements UserRepository {
 
   private final DynamicArray storage = new DynamicArray();
   private long currentId = 1;
