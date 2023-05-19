@@ -7,14 +7,11 @@ import lombok.EqualsAndHashCode;
 @Data
 @Builder
 @EqualsAndHashCode(of = "id")
-public class Book {
+public class BookTicket {
 
   private long id;
-  private String isbn;
-  private String title;
-  private String author;
-  private int year;
-  private double price;
-  private int count;
+  private Book book;
+  private User user;
+  private long takenTimestamp;
 
 }
