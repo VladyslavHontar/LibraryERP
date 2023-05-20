@@ -27,7 +27,7 @@ public class Launcher  {
     switch (user.getType()) {
       case ADMIN -> handleAdmin(terminal, userService, user);
       case MANAGER -> handleManager(terminal, libraryService, user);
-//      case CLIENT -> handleUser();
+      case CLIENT -> handleUser(terminal, libraryService, user);
     }
 
     System.err.println("Program finished");
@@ -138,7 +138,7 @@ public class Launcher  {
         case "ADD_BOOK": {
           String isbn = parts[1];
           String title = parts[2];
-          String author = parts[3];           //Shit aint working with second names
+          String author = parts[3];           //Shit a'int working with second names
           int year = Integer.parseInt(parts[4]);
           double price = Double.parseDouble(parts[5]);
           int count = Integer.parseInt(parts[6]);
@@ -170,9 +170,83 @@ public class Launcher  {
     } while (true);
   }
 
+  private static void handleUser(Terminal terminal, LibraryService libraryService, User user) {
+    do {
+      terminal.println("Enter the command: ");
+      String inputLine = terminal.readLine();
+      String[] parts = inputLine.split(" ");
+      String command = parts[0].toUpperCase();
+      switch (command) {
+        case "GET_BOOKS": {
+          String isbn = null;
+          String title = null;
+          String author = null;
+          Integer year = null;
+          if (parts.length > 1) {
+            String[] filters = inputLine.substring(command.length() + 1).split("&");
+            for (String filter : filters) {
+              String[] keyParts = filter.split("=");
+              String keyName = keyParts[0];
+              String keyValue = keyParts[1];
+              switch (keyName) {
+                case "isbn":
+                  isbn = keyValue;
+                  break;
+                case "title":
+                  title = keyValue;
+                  break;
+                case "author":
+                  author = keyValue;
+                  break;
+                case "year":
+                  year = Integer.parseInt(keyValue);
+                  break;
+              }
+            }
+          }
+          terminal.println("List of books: ");
+          for (Object bookObj : libraryService.getBooks()) {
+            Book book = (Book) bookObj;
+            if (isbn != null && !book.getIsbn().equals(isbn)
+                    || title != null && !book.getTitle().equals(title)
+                    || author != null && !book.getAuthor().equals(author)
+                    || year != null && book.getYear() != year) {
+              continue;
+            }
+            terminal.println(book);
+          }
+          break;
+        }
+        case "TAKE_BOOK":
+          Book takenBook = libraryService.takeBook(user, parts[1]);
+          if (takenBook == null) {
+            terminal.println("Failed to take a book with ISBN " + parts[1] + " :(");
+            break;
+          }
+          terminal.println("You have taken a book: " + takenBook);
+          break;
+        case "RETURN_BOOK":
+          Book returnedBook = libraryService.returnBook(user, parts[1]);
+          if (returnedBook != null) {
+            terminal.println("You have returned a book: " + returnedBook);
+            break;
+          }
+          terminal.println("We dont have any books with this ISBN " + parts[1] + " :(");
+          break;
+        case "EXIT":
+          terminal.println("Closing admin mode...");
+          return;
+
+        default:
+          terminal.println("Unknown command!");
+      }
+    } while (true);
+  }
+
   private static void prepareUserRepositoryMockData(UserRepository userRepository) {
     userRepository.save(User.builder().username("admin").password("admin").type(User.Type.ADMIN).build());
     userRepository.save(User.builder().username("manager").password("manager").type(User.Type.MANAGER).build());
+    userRepository.save(User.builder().username("user").password("user").type(User.Type.CLIENT).build());
   }
 
   private static void prepareBookRepositoryMockData(BookRepository bookRepository) {

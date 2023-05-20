@@ -45,4 +45,34 @@ public class LibraryService {
     System.err.println("Manager " + manager + " deleted book: " + bookToBeDeleted);
     return bookToBeDeleted;
   }
+
+  public Book takeBook(User user, String bookISBN) {
+    System.err.println("User " + user + " trying to take a book");
+    Book bookToBeTaken = repository.findByIsbn(bookISBN);
+
+    if (bookToBeTaken == null) {
+      System.err.println("User " + user + " tried to take not existing book: " + bookISBN);
+      return null;
+    }
+    if (bookToBeTaken.getCount() == 0) {
+      System.err.println("User " + user + " tried to take a book that is not available: " + bookISBN);
+      return null;
+    }
+    bookToBeTaken.setCount(bookToBeTaken.getCount() - 1);
+    System.err.println("User " + user + " took a book: " + bookToBeTaken);
+    return bookToBeTaken;
+  }
+
+  public Book returnBook(User user, String bookISBN) {
+    System.err.println("User " + user + " trying to return a book");
+    Book bookToBeReturned = repository.findByIsbn(bookISBN);
+
+    if (bookToBeReturned == null) {
+      System.err.println("User " + user + " tried to return not existing book: " + bookISBN);
+      return null;
+    }
+      bookToBeReturned.setCount(bookToBeReturned.getCount() + 1);
+      System.err.println("User " + user + " returned a book: " + bookToBeReturned);
+      return bookToBeReturned;
+  }
 }
