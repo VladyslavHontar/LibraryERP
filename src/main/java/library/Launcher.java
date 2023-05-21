@@ -136,13 +136,27 @@ public class Launcher  {
           break;
         }
         case "ADD_BOOK": {
-          String isbn = parts[1];
-          String title = parts[2];
-          String author = parts[3];           //Shit a'int working with second names
-          int year = Integer.parseInt(parts[4]);
-          double price = Double.parseDouble(parts[5]);
-          int count = Integer.parseInt(parts[6]);
-
+          String isbn;
+          String title;
+          String author;
+          int year;
+          double price;
+          int count;
+          if (parts.length == 8) {
+            isbn = parts[1];
+            title = parts[2];
+            author = parts[3] + " " + parts[4];
+            year = Integer.parseInt(parts[5]);
+            price = Double.parseDouble(parts[6]);
+            count = Integer.parseInt(parts[7]);
+          } else {
+            isbn = parts[1];
+            title = parts[2];
+            author = parts[3];
+            year = Integer.parseInt(parts[4]);
+            price = Double.parseDouble(parts[5]);
+            count = Integer.parseInt(parts[6]);
+          }
           Book newBook = libraryService.addBook(manager, isbn, title, author, year, price, count);
           if (newBook != null) {
             terminal.println("Failed to add new book because of already existed ISBN " + isbn + " :(");

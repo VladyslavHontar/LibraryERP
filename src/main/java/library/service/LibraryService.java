@@ -19,7 +19,7 @@ public class LibraryService {
     Book book = repository.findByIsbn(isbn);
     if (book != null) {
       System.err.println("Manager " + manager + " tried to add a book with existed isbn: " + isbn);
-      return null;
+      return book;
     }
     Book newBook = repository.save(Book.builder()
             .isbn(isbn)
