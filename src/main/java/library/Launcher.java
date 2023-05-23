@@ -136,26 +136,28 @@ public class Launcher  {
           break;
         }
         case "ADD_BOOK": {
-          String isbn;
+          String isbn = parts[1];
           String title;
           String author;
           int year;
           double price;
           int count;
-          if (parts.length == 8) {
-            isbn = parts[1];
+          if (parts.length > 8) {
+            StringBuilder titleBuilder = new StringBuilder();
+            for (int i = 2; i < parts.length - 5; i++) {
+              titleBuilder.append(parts[i]).append(" ");
+            }
+            title = titleBuilder.toString();
+            author = parts[parts.length - 5] + " " + parts[parts.length - 4];
+            year = Integer.parseInt(parts[parts.length - 3]);
+            price = Double.parseDouble(parts[parts.length - 2]);
+            count = Integer.parseInt(parts[parts.length - 1]);
+          } else {
             title = parts[2];
             author = parts[3] + " " + parts[4];
             year = Integer.parseInt(parts[5]);
             price = Double.parseDouble(parts[6]);
             count = Integer.parseInt(parts[7]);
-          } else {
-            isbn = parts[1];
-            title = parts[2];
-            author = parts[3];
-            year = Integer.parseInt(parts[4]);
-            price = Double.parseDouble(parts[5]);
-            count = Integer.parseInt(parts[6]);
           }
           Book newBook = libraryService.addBook(manager, isbn, title, author, year, price, count);
           if (newBook != null) {
