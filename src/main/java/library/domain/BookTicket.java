@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 public class BookTicket {
 
   private long id;
-  private Book book;
+  private String bookTitle;
   private User user;
   private long takenTimestamp;
 

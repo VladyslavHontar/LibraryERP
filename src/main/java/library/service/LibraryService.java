@@ -1,14 +1,17 @@
 package library.service;
 
 import library.domain.Book;
+import library.domain.BookTicket;
 import library.domain.User;
 import library.repository.BookRepository;
 import library.repository.DynamicArray;
+import library.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class LibraryService {
   private final BookRepository repository;
+  private final TicketRepository ticketRepository;
 
   public DynamicArray getBooks() {
     return repository.findAll();
@@ -74,5 +77,16 @@ public class LibraryService {
       bookToBeReturned.setCount(bookToBeReturned.getCount() + 1);
       System.err.println("User " + user + " returned a book: " + bookToBeReturned);
       return bookToBeReturned;
+  }
+
+  public BookTicket issueATicket(User user, String part) {
+    BookTicket ticket = ticketRepository.issueTicket(user, part);
+    return ticket;
+  }
+
+  public BookTicket returnTicket(User user, String part) {
+    BookTicket ticketToBeReturned = ticketRepository.findById(user.getId());
+    ticketRepository.returnTicket(user, part, ticketToBeReturned);
+    return ticketToBeReturned;
   }
 }

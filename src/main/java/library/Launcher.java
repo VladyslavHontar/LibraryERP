@@ -1,11 +1,14 @@
 package library;
 
 import library.domain.Book;
+import library.domain.BookTicket;
 import library.domain.User;
 import library.repository.BookRepository;
 import library.repository.memory.InMemoryBookRepository;
+import library.repository.memory.InMemoryBookTicketRepository;
 import library.repository.memory.InMemoryUserRepository;
 import library.repository.UserRepository;
+import library.repository.TicketRepository;
 import library.service.LibraryService;
 import library.service.UserService;
 
@@ -16,12 +19,13 @@ public class Launcher  {
     Terminal terminal = new Terminal(System.in, System.out);
     UserRepository userRepository = new InMemoryUserRepository();
     BookRepository bookRepository = new InMemoryBookRepository();
+    TicketRepository ticketRepository = new InMemoryBookTicketRepository();
 
     UserService userService = new UserService(userRepository);
     prepareUserRepositoryMockData(userRepository);
     prepareBookRepositoryMockData(bookRepository);
 
-    LibraryService libraryService = new LibraryService(bookRepository);
+    LibraryService libraryService = new LibraryService(bookRepository, ticketRepository);
 
     User user = login(terminal, userService);
     switch (user.getType()) {
@@ -235,16 +239,20 @@ public class Launcher  {
         }
         case "TAKE_BOOK":
           Book takenBook = libraryService.takeBook(user, parts[1]);
+          BookTicket newBookTicket = libraryService.issueATicket(user, parts[1]);
           if (takenBook == null) {
             terminal.println("Failed to take a book with ISBN " + parts[1] + " :(");
             break;
           }
           terminal.println("You have taken a book: " + takenBook);
+          terminal.println("Your ticket: " + newBookTicket);
           break;
         case "RETURN_BOOK":
           Book returnedBook = libraryService.returnBook(user, parts[1]);
+          BookTicket returnedBookTicket = libraryService.returnTicket(user, parts[1]);
           if (returnedBook != null) {
             terminal.println("You have returned a book: " + returnedBook);
+            terminal.println("Time spent: " + returnedBookTicket.getTakenTimestamp() + " seconds");
             break;
           }
           terminal.println("We dont have any books with this ISBN " + parts[1] + " :(");
