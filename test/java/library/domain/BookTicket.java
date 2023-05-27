@@ -1,0 +1,17 @@
+package library.domain;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@Builder
+@EqualsAndHashCode(of = "id")
+public class BookTicket {
+
+  private long id;
+  private String bookTitle;
+  private User user;
+  private long takenTimestamp;
+
+}
