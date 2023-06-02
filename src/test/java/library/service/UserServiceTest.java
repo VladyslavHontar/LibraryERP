@@ -1,4 +1,4 @@
-package library;
+package library.service;
 
 import library.domain.Book;
 import library.domain.User;
@@ -6,13 +6,13 @@ import library.repository.BookRepository;
 import library.repository.DynamicArray;
 import library.repository.UserRepository;
 import library.repository.memory.InMemoryBookRepository;
-import library.repository.memory.InMemoryUserRepository;
+import library.service.LibraryService;
 import library.service.UserService;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatcher;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 import java.util.function.Consumer;
@@ -21,13 +21,22 @@ import static library.domain.User.Type.ADMIN;
 import static library.domain.User.Type.MANAGER;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
+
+  @Mock
+  private UserRepository userRepo;
+
+  @Mock
+
+  @InjectMocks
+  private UserService userService;
+
 
   @SuppressWarnings("unchecked")
   @Test
   void addUserTest() {
     // Arrange
-    UserRepository userRepo = Mockito.mock(UserRepository.class);
     Mockito.when(userRepo.save(Mockito.any())).thenAnswer(new Answer<User>() {
       @Override
       public User answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -37,7 +46,6 @@ public class UserServiceTest {
       }
     });
 
-    UserService userService = new UserService(userRepo);
     User admin = User.builder().username("admin#1").build();
 
     // Act
@@ -60,10 +68,7 @@ public class UserServiceTest {
     users.add(User.builder().username("admin#2").type(ADMIN).build());
     users.add(User.builder().username("admin#3").type(ADMIN).build());
 
-    UserRepository userRepo = Mockito.mock(UserRepository.class);
     Mockito.when(userRepo.findAll()).thenReturn(users);
-
-    UserService userService = new UserService(userRepo);
 
     // Act
     DynamicArray result = userService.getUsers();
