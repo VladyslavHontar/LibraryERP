@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LibraryService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">libraryERP</a> &gt; <a href="index.source.html" class="el_package">library.service</a> &gt; <span class="el_source">LibraryService.java</span></div><h1>LibraryService.java</h1><pre class="source lang-java linenums">package library.service;
+
+import library.domain.Book;
+import library.domain.BookTicket;
+import library.domain.User;
+import library.repository.BookRepository;
+import library.repository.DynamicArray;
+import library.repository.TicketRepository;
+import lombok.RequiredArgsConstructor;
+
+<span class="fc" id="L11">@RequiredArgsConstructor</span>
+public class LibraryService {
+  private final BookRepository repository;
+  private final TicketRepository ticketRepository;
+
+  public DynamicArray getBooks() {
+<span class="fc" id="L17">    return repository.findAll();</span>
+  }
+
+  public Book addBook(User manager, String isbn, String title, String author, int year, double price, int count) {
+<span class="nc" id="L21">    System.err.println(&quot;Manager &quot; + manager + &quot; trying to add a new book&quot;);</span>
+<span class="nc" id="L22">    Book book = repository.findByIsbn(isbn);</span>
+<span class="nc bnc" id="L23" title="All 2 branches missed.">    if (book != null) {</span>
+<span class="nc" id="L24">      System.err.println(&quot;Manager &quot; + manager + &quot; tried to add a book with existed isbn: &quot; + isbn);</span>
+<span class="nc" id="L25">      return book;</span>
+    }
+<span class="nc" id="L27">    Book newBook = repository.save(Book.builder()</span>
+<span class="nc" id="L28">            .isbn(isbn)</span>
+<span class="nc" id="L29">            .title(title)</span>
+<span class="nc" id="L30">            .author(author)</span>
+<span class="nc" id="L31">            .year(year)</span>
+<span class="nc" id="L32">            .price(price)</span>
+<span class="nc" id="L33">            .count(count)</span>
+<span class="nc" id="L34">            .build());</span>
+<span class="nc" id="L35">    System.err.println(&quot;Manager &quot; + manager + &quot; added a new book: &quot; + newBook);</span>
+<span class="nc" id="L36">    return null;</span>
+  }
+
+  public Book delete(User manager, long bookId) {
+<span class="nc" id="L40">    System.err.println(&quot;Manager &quot; + manager + &quot; trying to delete a book&quot;);</span>
+<span class="nc" id="L41">    Book bookToBeDeleted = repository.findById(bookId);</span>
+
+<span class="nc bnc" id="L43" title="All 2 branches missed.">    if (bookToBeDeleted == null) {</span>
+<span class="nc" id="L44">      System.err.println(&quot;Manager &quot; + manager + &quot; tried to delete not existing/taken book: &quot; + bookId);</span>
+<span class="nc" id="L45">      return null;</span>
+    }
+<span class="nc" id="L47">    repository.delete(bookToBeDeleted);</span>
+<span class="nc" id="L48">    System.err.println(&quot;Manager &quot; + manager + &quot; deleted book: &quot; + bookToBeDeleted);</span>
+<span class="nc" id="L49">    return bookToBeDeleted;</span>
+  }
+
+  public Book takeBook(User user, String bookISBN) {
+<span class="nc" id="L53">    System.err.println(&quot;User &quot; + user + &quot; trying to take a book&quot;);</span>
+<span class="nc" id="L54">    Book bookToBeTaken = repository.findByIsbn(bookISBN);</span>
+
+<span class="nc bnc" id="L56" title="All 2 branches missed.">    if (bookToBeTaken == null) {</span>
+<span class="nc" id="L57">      System.err.println(&quot;User &quot; + user + &quot; tried to take not existing book: &quot; + bookISBN);</span>
+<span class="nc" id="L58">      return null;</span>
+    }
+<span class="nc bnc" id="L60" title="All 2 branches missed.">    if (bookToBeTaken.getCount() == 0) {</span>
+<span class="nc" id="L61">      System.err.println(&quot;User &quot; + user + &quot; tried to take a book that is not available: &quot; + bookISBN);</span>
+<span class="nc" id="L62">      return null;</span>
+    }
+<span class="nc" id="L64">    bookToBeTaken.setCount(bookToBeTaken.getCount() - 1);</span>
+<span class="nc" id="L65">    System.err.println(&quot;User &quot; + user + &quot; took a book: &quot; + bookToBeTaken);</span>
+<span class="nc" id="L66">    return bookToBeTaken;</span>
+  }
+
+  public Book returnBook(User user, String bookISBN) {
+<span class="nc" id="L70">    System.err.println(&quot;User &quot; + user + &quot; trying to return a book&quot;);</span>
+<span class="nc" id="L71">    Book bookToBeReturned = repository.findByIsbn(bookISBN);</span>
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">    if (bookToBeReturned == null) {</span>
+<span class="nc" id="L74">      System.err.println(&quot;User &quot; + user + &quot; tried to return not existing book: &quot; + bookISBN);</span>
+<span class="nc" id="L75">      return null;</span>
+    }
+<span class="nc" id="L77">      bookToBeReturned.setCount(bookToBeReturned.getCount() + 1);</span>
+<span class="nc" id="L78">      System.err.println(&quot;User &quot; + user + &quot; returned a book: &quot; + bookToBeReturned);</span>
+<span class="nc" id="L79">      return bookToBeReturned;</span>
+  }
+
+  public BookTicket issueATicket(User user, String part) {
+<span class="nc" id="L83">    BookTicket ticket = ticketRepository.issueTicket(user, part);</span>
+<span class="nc" id="L84">    return ticket;</span>
+  }
+
+  public BookTicket returnTicket(User user, String part) {
+<span class="nc" id="L88">    BookTicket ticketToBeReturned = ticketRepository.findById(user.getId());</span>
+<span class="nc" id="L89">    ticketRepository.returnTicket(user, part, ticketToBeReturned);</span>
+<span class="nc" id="L90">    return ticketToBeReturned;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

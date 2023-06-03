@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InMemoryBookTicketRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">libraryERP</a> &gt; <a href="index.source.html" class="el_package">library.repository.memory</a> &gt; <span class="el_source">InMemoryBookTicketRepository.java</span></div><h1>InMemoryBookTicketRepository.java</h1><pre class="source lang-java linenums">package library.repository.memory;
+
+import library.domain.Book;
+import library.domain.BookTicket;
+import library.domain.User;
+import library.repository.DynamicArray;
+import library.repository.TicketRepository;
+
+<span class="nc" id="L9">public class InMemoryBookTicketRepository implements TicketRepository {</span>
+
+<span class="nc" id="L11">  private final DynamicArray storage = new DynamicArray();</span>
+<span class="nc" id="L12">  private long currentId = 1;</span>
+  @Override
+  public DynamicArray findAll() {
+<span class="nc" id="L15">    return storage;</span>
+  }
+
+  @Override
+  public BookTicket findById(long id) {
+<span class="nc bnc" id="L20" title="All 2 branches missed.">    for (Object ticketObj : storage) {</span>
+<span class="nc" id="L21">      BookTicket ticket = (BookTicket) ticketObj;</span>
+<span class="nc bnc" id="L22" title="All 2 branches missed.">      if (ticket.getId() == id) {</span>
+<span class="nc" id="L23">        return ticket;</span>
+      }
+<span class="nc" id="L25">    }</span>
+<span class="nc" id="L26">    return null;</span>
+  }
+
+  @Override
+  public BookTicket issueTicket(User user, String book) {
+<span class="nc" id="L31">    System.err.println(&quot;Ticket issued for user &quot; + user.getUsername() + &quot; for book &quot; + book);</span>
+<span class="nc" id="L32">    BookTicket newTicket = BookTicket.builder()</span>
+<span class="nc" id="L33">        .id(currentId)</span>
+<span class="nc" id="L34">        .user(user)</span>
+<span class="nc" id="L35">        .bookTitle(book)</span>
+<span class="nc" id="L36">        .takenTimestamp(System.currentTimeMillis())</span>
+<span class="nc" id="L37">        .build();</span>
+<span class="nc" id="L38">    currentId++;</span>
+<span class="nc" id="L39">    storage.add(newTicket);</span>
+<span class="nc" id="L40">    return newTicket;</span>
+  }
+
+  @Override
+  public void returnTicket(User user, String part, BookTicket ticket) {
+<span class="nc" id="L45">    System.err.println(&quot;Ticket returned for user &quot; + user.getUsername() + &quot; for book &quot; + part);</span>
+<span class="nc" id="L46">    storage.remove(ticket);</span>
+<span class="nc" id="L47">    System.err.println(&quot;Ticket removed from storage: &quot; + ticket + &quot;\nTicket time: &quot; + (ticket.getTakenTimestamp() - System.currentTimeMillis()));</span>
+<span class="nc" id="L48">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

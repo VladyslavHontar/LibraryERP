@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Launcher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">libraryERP</a> &gt; <a href="index.source.html" class="el_package">library</a> &gt; <span class="el_source">Launcher.java</span></div><h1>Launcher.java</h1><pre class="source lang-java linenums">package library;
+
+import library.domain.Book;
+import library.domain.BookTicket;
+import library.domain.User;
+import library.repository.BookRepository;
+import library.repository.memory.InMemoryBookRepository;
+import library.repository.memory.InMemoryBookTicketRepository;
+import library.repository.memory.InMemoryUserRepository;
+import library.repository.UserRepository;
+import library.repository.TicketRepository;
+import library.service.LibraryService;
+import library.service.UserService;
+
+<span class="nc" id="L15">public class Launcher  {</span>
+  public static void main(String[] args) {
+<span class="nc" id="L17">    System.err.println(&quot;Program started&quot;);</span>
+
+<span class="nc" id="L19">    Terminal terminal = new Terminal(System.in, System.out);</span>
+<span class="nc" id="L20">    UserRepository userRepository = new InMemoryUserRepository();</span>
+<span class="nc" id="L21">    BookRepository bookRepository = new InMemoryBookRepository();</span>
+<span class="nc" id="L22">    TicketRepository ticketRepository = new InMemoryBookTicketRepository();</span>
+
+<span class="nc" id="L24">    UserService userService = new UserService(userRepository);</span>
+<span class="nc" id="L25">    prepareUserRepositoryMockData(userRepository);</span>
+<span class="nc" id="L26">    prepareBookRepositoryMockData(bookRepository);</span>
+
+<span class="nc" id="L28">    LibraryService libraryService = new LibraryService(bookRepository, ticketRepository);</span>
+
+<span class="nc" id="L30">    User user = login(terminal, userService);</span>
+<span class="nc bnc" id="L31" title="All 4 branches missed.">    switch (user.getType()) {</span>
+<span class="nc" id="L32">      case ADMIN -&gt; handleAdmin(terminal, userService, user);</span>
+<span class="nc" id="L33">      case MANAGER -&gt; handleManager(terminal, libraryService, user);</span>
+<span class="nc" id="L34">      case CLIENT -&gt; handleUser(terminal, libraryService, user);</span>
+    }
+
+<span class="nc" id="L37">    System.err.println(&quot;Program finished&quot;);</span>
+<span class="nc" id="L38">  }</span>
+
+  private static User login(Terminal terminal, UserService userService) {
+    do {
+<span class="nc" id="L42">      terminal.print(&quot;Enter your username: &quot;);</span>
+<span class="nc" id="L43">      String username = terminal.readLine();</span>
+
+<span class="nc" id="L45">      terminal.print(&quot;Enter your password: &quot;);</span>
+<span class="nc" id="L46">      String password = terminal.readLine();</span>
+
+<span class="nc" id="L48">      User user = userService.authenticate(username, password);</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">      if (user != null) {</span>
+<span class="nc" id="L50">        terminal.println(&quot;Hello &quot; + username + &quot;!&quot;);</span>
+<span class="nc" id="L51">        return user;</span>
+      }
+<span class="nc" id="L53">      terminal.println(&quot;Failed to login, please try again :(&quot;);</span>
+<span class="nc" id="L54">    } while (true);</span>
+  }
+
+  private static void handleAdmin(Terminal terminal, UserService userService, User admin) {
+<span class="nc" id="L58">    terminal.println(&quot;Handle mode Admin&quot;);</span>
+
+    do {
+<span class="nc" id="L61">      terminal.println(&quot;Enter the command: &quot;);</span>
+<span class="nc" id="L62">      String[] parts = terminal.readLine().split(&quot; &quot;);</span>
+<span class="nc" id="L63">      String command = parts[0].toUpperCase();</span>
+<span class="nc bnc" id="L64" title="All 5 branches missed.">      switch (command) {</span>
+        case &quot;LIST_USERS&quot;:
+<span class="nc" id="L66">          terminal.println(&quot;List of users: &quot;);</span>
+<span class="nc" id="L67">          userService.getUsers().forEach(terminal::println);</span>
+<span class="nc" id="L68">          break;</span>
+        case &quot;ADD_USER&quot;:
+<span class="nc" id="L70">          String username = parts[1];</span>
+<span class="nc" id="L71">          String password = parts[2];</span>
+<span class="nc" id="L72">          String type = parts[3];</span>
+<span class="nc" id="L73">          User newUser = userService.add(admin, username, password, User.Type.valueOf(type));</span>
+<span class="nc" id="L74">          terminal.println(&quot;New user was added &quot; + newUser);</span>
+<span class="nc" id="L75">          break;</span>
+        case &quot;DELETE_USER&quot;:
+<span class="nc" id="L77">          long userId = Long.parseLong(parts[1]);</span>
+<span class="nc" id="L78">          User deletedUser = userService.delete(admin, userId);</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">          if (deletedUser == null) {</span>
+<span class="nc" id="L80">            terminal.println(&quot;Failed to delete user with id &quot; + userId + &quot; :(&quot;);</span>
+          }
+<span class="nc" id="L82">          terminal.println(&quot;User: &quot; + deletedUser + &quot; has been deleted&quot;);</span>
+<span class="nc" id="L83">          break;</span>
+        case &quot;EXIT&quot;:
+<span class="nc" id="L85">          terminal.println(&quot;Closing admin mode...&quot;);</span>
+<span class="nc" id="L86">          return;</span>
+
+        default:
+<span class="nc" id="L89">          terminal.println(&quot;Unknown command!&quot;);</span>
+      }
+<span class="nc" id="L91">    } while (true);</span>
+  }
+
+  private static void handleManager(Terminal terminal, LibraryService libraryService, User manager) {
+<span class="nc" id="L95">    terminal.println(&quot;Handle mode Manager&quot;);</span>
+    do {
+<span class="nc" id="L97">      terminal.println(&quot;Enter the command: &quot;);</span>
+<span class="nc" id="L98">      String inputLine = terminal.readLine();</span>
+<span class="nc" id="L99">      String[] parts = inputLine.split(&quot; &quot;);</span>
+<span class="nc" id="L100">      String command = parts[0].toUpperCase();</span>
+<span class="nc bnc" id="L101" title="All 5 branches missed.">      switch (command) {</span>
+        case &quot;GET_BOOKS&quot;: {
+<span class="nc" id="L103">          String isbn = null;</span>
+<span class="nc" id="L104">          String title = null;</span>
+<span class="nc" id="L105">          String author = null;</span>
+<span class="nc" id="L106">          Integer year = null;</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">          if (parts.length &gt; 1) {</span>
+<span class="nc" id="L108">            String[] filters = inputLine.substring(command.length() + 1).split(&quot;&amp;&quot;);</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            for (String filter : filters) {</span>
+<span class="nc" id="L110">              String[] keyParts = filter.split(&quot;=&quot;);</span>
+<span class="nc" id="L111">              String keyName = keyParts[0];</span>
+<span class="nc" id="L112">              String keyValue = keyParts[1];</span>
+<span class="nc bnc" id="L113" title="All 5 branches missed.">              switch (keyName) {</span>
+                case &quot;isbn&quot;:
+<span class="nc" id="L115">                  isbn = keyValue;</span>
+<span class="nc" id="L116">                  break;</span>
+                case &quot;title&quot;:
+<span class="nc" id="L118">                  title = keyValue;</span>
+<span class="nc" id="L119">                  break;</span>
+                case &quot;author&quot;:
+<span class="nc" id="L121">                  author = keyValue;</span>
+<span class="nc" id="L122">                  break;</span>
+                case &quot;year&quot;:
+<span class="nc" id="L124">                  year = Integer.parseInt(keyValue);</span>
+                  break;
+              }
+            }
+          }
+<span class="nc" id="L129">          terminal.println(&quot;List of books: &quot;);</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">          for (Object bookObj : libraryService.getBooks()) {</span>
+<span class="nc" id="L131">            Book book = (Book) bookObj;</span>
+<span class="nc bnc" id="L132" title="All 6 branches missed.">            if (isbn != null &amp;&amp; !book.getIsbn().equals(isbn)</span>
+<span class="nc bnc" id="L133" title="All 4 branches missed.">                    || title != null &amp;&amp; !book.getTitle().equals(title)</span>
+<span class="nc bnc" id="L134" title="All 4 branches missed.">                    || author != null &amp;&amp; !book.getAuthor().equals(author)</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">                    || year != null &amp;&amp; book.getYear() != year) {</span>
+<span class="nc" id="L136">              continue;</span>
+            }
+<span class="nc" id="L138">            terminal.println(book);</span>
+<span class="nc" id="L139">          }</span>
+<span class="nc" id="L140">          break;</span>
+        }
+        case &quot;ADD_BOOK&quot;: {
+<span class="nc" id="L143">          String isbn = parts[1];</span>
+          String title;
+          String author;
+          int year;
+          double price;
+          int count;
+<span class="nc bnc" id="L149" title="All 2 branches missed.">          if (parts.length &gt; 8) {</span>
+<span class="nc" id="L150">            StringBuilder titleBuilder = new StringBuilder();</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">            for (int i = 2; i &lt; parts.length - 5; i++) {</span>
+<span class="nc" id="L152">              titleBuilder.append(parts[i]).append(&quot; &quot;);</span>
+            }
+<span class="nc" id="L154">            title = titleBuilder.toString();</span>
+<span class="nc" id="L155">            author = parts[parts.length - 5] + &quot; &quot; + parts[parts.length - 4];</span>
+<span class="nc" id="L156">            year = Integer.parseInt(parts[parts.length - 3]);</span>
+<span class="nc" id="L157">            price = Double.parseDouble(parts[parts.length - 2]);</span>
+<span class="nc" id="L158">            count = Integer.parseInt(parts[parts.length - 1]);</span>
+<span class="nc" id="L159">          } else {</span>
+<span class="nc" id="L160">            title = parts[2];</span>
+<span class="nc" id="L161">            author = parts[3] + &quot; &quot; + parts[4];</span>
+<span class="nc" id="L162">            year = Integer.parseInt(parts[5]);</span>
+<span class="nc" id="L163">            price = Double.parseDouble(parts[6]);</span>
+<span class="nc" id="L164">            count = Integer.parseInt(parts[7]);</span>
+          }
+<span class="nc" id="L166">          Book newBook = libraryService.addBook(manager, isbn, title, author, year, price, count);</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">          if (newBook != null) {</span>
+<span class="nc" id="L168">            terminal.println(&quot;Failed to add new book because of already existed ISBN &quot; + isbn + &quot; :(&quot;);</span>
+          } else {
+<span class="nc" id="L170">            terminal.println(&quot;New book was added&quot;);</span>
+          }
+<span class="nc" id="L172">          break;</span>
+        }
+        case &quot;DELETE_BOOK&quot;:
+<span class="nc" id="L175">          long bookId = Long.parseLong(parts[1]);</span>
+<span class="nc" id="L176">          Book deletedBook = libraryService.delete(manager, bookId);</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">          if (deletedBook == null) {</span>
+<span class="nc" id="L178">            terminal.println(&quot;Failed to delete book with id &quot; + bookId + &quot; :(&quot;);</span>
+          } else {
+<span class="nc" id="L180">            terminal.println(&quot;Book: &quot; + deletedBook + &quot; has been deleted&quot;);</span>
+          }
+<span class="nc" id="L182">          break;</span>
+        case &quot;EXIT&quot;:
+<span class="nc" id="L184">          terminal.println(&quot;Closing manager mode...&quot;);</span>
+<span class="nc" id="L185">          return;</span>
+
+        default:
+<span class="nc" id="L188">          terminal.println(&quot;Unknown command!&quot;);</span>
+      }
+<span class="nc" id="L190">    } while (true);</span>
+  }
+
+  private static void handleUser(Terminal terminal, LibraryService libraryService, User user) {
+    do {
+<span class="nc" id="L195">      terminal.println(&quot;Enter the command: &quot;);</span>
+<span class="nc" id="L196">      String inputLine = terminal.readLine();</span>
+<span class="nc" id="L197">      String[] parts = inputLine.split(&quot; &quot;);</span>
+<span class="nc" id="L198">      String command = parts[0].toUpperCase();</span>
+<span class="nc bnc" id="L199" title="All 5 branches missed.">      switch (command) {</span>
+        case &quot;GET_BOOKS&quot;: {
+<span class="nc" id="L201">          String isbn = null;</span>
+<span class="nc" id="L202">          String title = null;</span>
+<span class="nc" id="L203">          String author = null;</span>
+<span class="nc" id="L204">          Integer year = null;</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">          if (parts.length &gt; 1) {</span>
+<span class="nc" id="L206">            String[] filters = inputLine.substring(command.length() + 1).split(&quot;&amp;&quot;);</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">            for (String filter : filters) {</span>
+<span class="nc" id="L208">              String[] keyParts = filter.split(&quot;=&quot;);</span>
+<span class="nc" id="L209">              String keyName = keyParts[0];</span>
+<span class="nc" id="L210">              String keyValue = keyParts[1];</span>
+<span class="nc bnc" id="L211" title="All 5 branches missed.">              switch (keyName) {</span>
+                case &quot;isbn&quot;:
+<span class="nc" id="L213">                  isbn = keyValue;</span>
+<span class="nc" id="L214">                  break;</span>
+                case &quot;title&quot;:
+<span class="nc" id="L216">                  title = keyValue;</span>
+<span class="nc" id="L217">                  break;</span>
+                case &quot;author&quot;:
+<span class="nc" id="L219">                  author = keyValue;</span>
+<span class="nc" id="L220">                  break;</span>
+                case &quot;year&quot;:
+<span class="nc" id="L222">                  year = Integer.parseInt(keyValue);</span>
+                  break;
+              }
+            }
+          }
+<span class="nc" id="L227">          terminal.println(&quot;List of books: &quot;);</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">          for (Object bookObj : libraryService.getBooks()) {</span>
+<span class="nc" id="L229">            Book book = (Book) bookObj;</span>
+<span class="nc bnc" id="L230" title="All 6 branches missed.">            if (isbn != null &amp;&amp; !book.getIsbn().equals(isbn)</span>
+<span class="nc bnc" id="L231" title="All 4 branches missed.">                    || title != null &amp;&amp; !book.getTitle().equals(title)</span>
+<span class="nc bnc" id="L232" title="All 4 branches missed.">                    || author != null &amp;&amp; !book.getAuthor().equals(author)</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">                    || year != null &amp;&amp; book.getYear() != year) {</span>
+<span class="nc" id="L234">              continue;</span>
+            }
+<span class="nc" id="L236">            terminal.println(book);</span>
+<span class="nc" id="L237">          }</span>
+<span class="nc" id="L238">          break;</span>
+        }
+        case &quot;TAKE_BOOK&quot;:
+<span class="nc" id="L241">          Book takenBook = libraryService.takeBook(user, parts[1]);</span>
+<span class="nc" id="L242">          BookTicket newBookTicket = libraryService.issueATicket(user, parts[1]);</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">          if (takenBook == null) {</span>
+<span class="nc" id="L244">            terminal.println(&quot;Failed to take a book with ISBN &quot; + parts[1] + &quot; :(&quot;);</span>
+<span class="nc" id="L245">            break;</span>
+          }
+<span class="nc" id="L247">          terminal.println(&quot;You have taken a book: &quot; + takenBook);</span>
+<span class="nc" id="L248">          terminal.println(&quot;Your ticket: &quot; + newBookTicket);</span>
+<span class="nc" id="L249">          break;</span>
+        case &quot;RETURN_BOOK&quot;:
+<span class="nc" id="L251">          Book returnedBook = libraryService.returnBook(user, parts[1]);</span>
+<span class="nc" id="L252">          BookTicket returnedBookTicket = libraryService.returnTicket(user, parts[1]);</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">          if (returnedBook != null) {</span>
+<span class="nc" id="L254">            terminal.println(&quot;You have returned a book: &quot; + returnedBook);</span>
+<span class="nc" id="L255">            terminal.println(&quot;Time spent: &quot; + returnedBookTicket.getTakenTimestamp() + &quot; seconds&quot;);</span>
+<span class="nc" id="L256">            break;</span>
+          }
+<span class="nc" id="L258">          terminal.println(&quot;We dont have any books with this ISBN &quot; + parts[1] + &quot; :(&quot;);</span>
+<span class="nc" id="L259">          break;</span>
+        case &quot;EXIT&quot;:
+<span class="nc" id="L261">          terminal.println(&quot;Closing admin mode...&quot;);</span>
+<span class="nc" id="L262">          return;</span>
+
+        default:
+<span class="nc" id="L265">          terminal.println(&quot;Unknown command!&quot;);</span>
+      }
+<span class="nc" id="L267">    } while (true);</span>
+  }
+
+  private static void prepareUserRepositoryMockData(UserRepository userRepository) {
+<span class="nc" id="L271">    userRepository.save(User.builder().username(&quot;admin&quot;).password(&quot;admin&quot;).type(User.Type.ADMIN).build());</span>
+<span class="nc" id="L272">    userRepository.save(User.builder().username(&quot;manager&quot;).password(&quot;manager&quot;).type(User.Type.MANAGER).build());</span>
+<span class="nc" id="L273">    userRepository.save(User.builder().username(&quot;user&quot;).password(&quot;user&quot;).type(User.Type.CLIENT).build());</span>
+<span class="nc" id="L274">  }</span>
+
+  private static void prepareBookRepositoryMockData(BookRepository bookRepository) {
+<span class="nc" id="L277">    bookRepository.save(Book.builder().isbn(&quot;1234567890&quot;).title(&quot;Java&quot;).author(&quot;Ion Creanga&quot;).year(2020).price(99.99).count(10).build());</span>
+<span class="nc" id="L278">    bookRepository.save(Book.builder().isbn(&quot;1234567891&quot;).title(&quot;Зов Предков&quot;).author(&quot;Mihai Eminescu&quot;).year(2018).price(87.99).count(5).build());</span>
+<span class="nc" id="L279">    bookRepository.save(Book.builder().isbn(&quot;1234567892&quot;).title(&quot;Гроза&quot;).author(&quot;Ion Creanga&quot;).year(2011).price(30.99).count(4).build());</span>
+<span class="nc" id="L280">    bookRepository.save(Book.builder().isbn(&quot;1234567893&quot;).title(&quot;Война и Мир&quot;).author(&quot;Lev Tolstoi&quot;).year(2019).price(99.99).count(10).build());</span>
+<span class="nc" id="L281">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
