@@ -4,27 +4,30 @@ import library.domain.Book;
 import library.domain.BookTicket;
 import library.domain.User;
 import library.repository.BookRepository;
-import library.repository.DynamicArray;
+import library.util.CustomOptional;
+import library.util.DynamicArray;
 import library.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.NoSuchElementException;
+
 @RequiredArgsConstructor
 public class LibraryService {
-  private final BookRepository repository;
+  private final BookRepository bookRepository;
   private final TicketRepository ticketRepository;
 
   public DynamicArray getBooks() {
-    return repository.findAll();
+    return bookRepository.findAll();
   }
 
   public Book addBook(User manager, String isbn, String title, String author, int year, double price, int count) {
     System.err.println("Manager " + manager + " trying to add a new book");
-    Book book = repository.findByIsbn(isbn);
+    Book book = bookRepository.findByIsbn(isbn);
     if (book != null) {
       System.err.println("Manager " + manager + " tried to add a book with existed isbn: " + isbn);
       return book;
     }
-    Book newBook = repository.save(Book.builder()
+    Book newBook = bookRepository.save(Book.builder()
             .isbn(isbn)
             .title(title)
             .author(author)
@@ -38,21 +41,19 @@ public class LibraryService {
 
   public Book delete(User manager, long bookId) {
     System.err.println("Manager " + manager + " trying to delete a book");
-    Book bookToBeDeleted = repository.findById(bookId);
-
-    if (bookToBeDeleted == null) {
-      System.err.println("Manager " + manager + " tried to delete not existing/taken book: " + bookId);
-      return null;
+    CustomOptional<Book> optionalBook = bookRepository.findById(bookId);
+    if (optionalBook.isEmpty()) {
+      throw new IllegalArgumentException("Book with id " + bookId + " not found");
     }
-    repository.delete(bookToBeDeleted);
+    Book bookToBeDeleted = optionalBook.get();
+    bookRepository.delete(bookToBeDeleted);
     System.err.println("Manager " + manager + " deleted book: " + bookToBeDeleted);
     return bookToBeDeleted;
   }
 
   public Book takeBook(User user, String bookISBN) {
     System.err.println("User " + user + " trying to take a book");
-    Book bookToBeTaken = repository.findByIsbn(bookISBN);
-
+    Book bookToBeTaken = bookRepository.findByIsbn(bookISBN);
     if (bookToBeTaken == null) {
       System.err.println("User " + user + " tried to take not existing book: " + bookISBN);
       return null;
@@ -68,7 +69,7 @@ public class LibraryService {
 
   public Book returnBook(User user, String bookISBN) {
     System.err.println("User " + user + " trying to return a book");
-    Book bookToBeReturned = repository.findByIsbn(bookISBN);
+    Book bookToBeReturned = bookRepository.findByIsbn(bookISBN);
 
     if (bookToBeReturned == null) {
       System.err.println("User " + user + " tried to return not existing book: " + bookISBN);
@@ -78,15 +79,18 @@ public class LibraryService {
       System.err.println("User " + user + " returned a book: " + bookToBeReturned);
       return bookToBeReturned;
   }
+  public BookTicket takeBook(User user, Long bookId) {
+    System.err.println("User " + user + " trying to take a book");
+    Book bookToBeTaken = bookRepository
+            .findById(bookId)
+            .filter(book -> book.getCount() > 0)
+            .orElseThrow(new NoSuchElementException());
 
-  public BookTicket issueATicket(User user, String part) {
-    BookTicket ticket = ticketRepository.issueTicket(user, part);
+    BookTicket ticket = ticketRepository.save(BookTicket.builder()
+                                                        .book(bookToBeTaken)
+                                                        .user(user)
+                                                        .build());
+    System.err.println("User " + user + " took a book: " + bookToBeTaken + " with ticket: " + ticket);
     return ticket;
-  }
-
-  public BookTicket returnTicket(User user, String part) {
-    BookTicket ticketToBeReturned = ticketRepository.findById(user.getId());
-    ticketRepository.returnTicket(user, part, ticketToBeReturned);
-    return ticketToBeReturned;
   }
 }

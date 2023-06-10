@@ -1,17 +1,18 @@
 package library.service;
 
 import library.domain.User;
-import library.repository.DynamicArray;
+import library.util.CustomOptional;
+import library.util.DynamicArray;
 import library.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UserService {
 
-  private final UserRepository repository;
+  private final UserRepository userRepository;
 
   public User authenticate(String username, String password) {
-    User user = repository.findByUsername(username);
+    User user = userRepository.findByUsername(username);
     if (user != null && user.getPassword().equals(password)) {
       return user;
     }
@@ -19,16 +20,16 @@ public class UserService {
   }
 
   public DynamicArray getUsers() {
-    return repository.findAll();
+    return userRepository.findAll();
   }
 
   public User add(User admin ,String username, String password, User.Type type) {
-    User user = repository.findByUsername(username);
+    User user = userRepository.findByUsername(username);
     if (user != null) {
       System.err.println("Admin " + admin + " tried to add user with existed name");
       return null;
     }
-    User newUser = repository.save(User.builder()
+    User newUser = userRepository.save(User.builder()
                                        .username(username)
                                        .password(password)
                                        .type(type)
@@ -42,12 +43,12 @@ public class UserService {
       System.err.println("Admin tried to delete himself: " + userId);
       return null;
     }
-    User userToBeDeleted = repository.findById(userId);
-    if (userToBeDeleted == null) {
-      System.err.println("Admin " + admin + " tried to delete not existing user: " + userId);
-      return null;
+    CustomOptional<User> optionalUser = userRepository.findById(userId);
+    if (optionalUser.isEmpty()) {
+      throw new IllegalArgumentException("User with id " + userId + " not found");
     }
-    repository.delete(userToBeDeleted);
+    User userToBeDeleted = optionalUser.get();
+    userRepository.delete(userToBeDeleted);
     System.err.println("Admin " + admin + " deleted user: " + userToBeDeleted);
     return userToBeDeleted;
   }
