@@ -33,7 +33,6 @@ public class Launcher  {
       case MANAGER -> handleManager(terminal, libraryService, user);
       case CLIENT -> handleUser(terminal, libraryService, user);
     }
-
     System.err.println("Program finished");
   }
 
@@ -69,7 +68,7 @@ public class Launcher  {
         case "ADD_USER":
           String username = parts[1];
           String password = parts[2];
-          String type = parts[3];
+          String type = parts[3].toUpperCase();
           User newUser = userService.add(admin, username, password, User.Type.valueOf(type));
           terminal.println("New user was added " + newUser);
           break;
@@ -173,11 +172,11 @@ public class Launcher  {
         }
         case "DELETE_BOOK":
           long bookId = Long.parseLong(parts[1]);
-          Book deletedBook = libraryService.delete(manager, bookId);
-          if (deletedBook == null) {
-            terminal.println("Failed to delete book with id " + bookId + " :(");
-          } else {
+          try {
+            Book deletedBook = libraryService.delete(manager, bookId);
             terminal.println("Book: " + deletedBook + " has been deleted");
+          } catch (IllegalArgumentException e) {
+            terminal.println("Failed to delete book with id " + bookId + " :(");
           }
           break;
         case "EXIT":
@@ -239,26 +238,22 @@ public class Launcher  {
         }
         case "TAKE_BOOK":
           Book takenBook = libraryService.takeBook(user, parts[1]);
-          BookTicket newBookTicket = libraryService.issueATicket(user, parts[1]);
           if (takenBook == null) {
             terminal.println("Failed to take a book with ISBN " + parts[1] + " :(");
             break;
           }
           terminal.println("You have taken a book: " + takenBook);
-          terminal.println("Your ticket: " + newBookTicket);
           break;
         case "RETURN_BOOK":
           Book returnedBook = libraryService.returnBook(user, parts[1]);
-          BookTicket returnedBookTicket = libraryService.returnTicket(user, parts[1]);
           if (returnedBook != null) {
             terminal.println("You have returned a book: " + returnedBook);
-            terminal.println("Time spent: " + returnedBookTicket.getTakenTimestamp() + " seconds");
             break;
           }
           terminal.println("We dont have any books with this ISBN " + parts[1] + " :(");
           break;
         case "EXIT":
-          terminal.println("Closing admin mode...");
+          terminal.println("Closing...");
           return;
 
         default:
