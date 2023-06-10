@@ -1,8 +1,7 @@
 package library.service;
 
-import library.domain.BookTicket;
 import library.repository.BookRepository;
-import library.repository.DynamicArray;
+import library.util.DynamicArray;
 import library.repository.TicketRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

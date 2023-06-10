@@ -1,7 +1,7 @@
 package library;
 
 import library.domain.User;
-import library.repository.DynamicArray;
+import library.util.DynamicArray;
 import library.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -68,7 +68,7 @@ public class MockitoTest {
     });
 
     ProxyRepo.findAll();
-    ProxyRepo.findById(1743);
+    ProxyRepo.findById(1743L);
 //    ProxyRepo.delete(null);
 
   }
