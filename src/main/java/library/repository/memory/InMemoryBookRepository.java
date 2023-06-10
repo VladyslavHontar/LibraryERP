@@ -2,7 +2,8 @@ package library.repository.memory;
 
 import library.domain.Book;
 import library.repository.BookRepository;
-import library.repository.DynamicArray;
+import library.util.CustomOptional;
+import library.util.DynamicArray;
 
 public class InMemoryBookRepository implements BookRepository {
 
@@ -13,7 +14,7 @@ public class InMemoryBookRepository implements BookRepository {
   public Book save(Book book) {
     long id = book.getId();
     if (id > 0) {
-      Book updatedBook = findById(id);
+      Book updatedBook = findById(id).get();
       updatedBook.setIsbn(book.getIsbn());
       updatedBook.setTitle(book.getTitle());
       updatedBook.setAuthor(book.getAuthor());
@@ -36,15 +37,16 @@ public class InMemoryBookRepository implements BookRepository {
   }
 
   @Override
-  public Book findById(long id) {
+  public CustomOptional<Book> findById(Long id) {
     for (Object bookObj : storage) {
       Book book = (Book) bookObj;
       if (book.getId() == id) {
-        return book;
+        return new CustomOptional<>(book);
       }
     }
     return null;
   }
+
 
   @Override
   public DynamicArray findByTitle(String title) {

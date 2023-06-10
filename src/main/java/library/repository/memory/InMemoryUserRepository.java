@@ -1,7 +1,8 @@
 package library.repository.memory;
 
 import library.domain.User;
-import library.repository.DynamicArray;
+import library.util.CustomOptional;
+import library.util.DynamicArray;
 import library.repository.UserRepository;
 
 public class InMemoryUserRepository implements UserRepository {
@@ -13,7 +14,7 @@ public class InMemoryUserRepository implements UserRepository {
   public User save(User user) {
     long id = user.getId();
     if (id > 0) {
-      User updatedUser = findById(id);
+      User updatedUser = findById(id).get();
       updatedUser.setUsername(user.getUsername());
       updatedUser.setPassword(user.getPassword());
       updatedUser.setType(user.getType());
@@ -32,11 +33,11 @@ public class InMemoryUserRepository implements UserRepository {
   }
 
   @Override
-  public User findById(long id) {
+  public CustomOptional<User> findById(Long id) {
     for (Object userObj : storage) {
       User user = (User) userObj;
       if (user.getId() == id) {
-        return user;
+        return new CustomOptional<>(user);
       }
     }
     return null;
