@@ -1,15 +1,11 @@
 package library.repository;
 
+import library.domain.Book;
 import library.domain.BookTicket;
-import library.domain.User;
+import library.util.DynamicArray;
 
-public interface TicketRepository {
+public interface TicketRepository extends CrudRepository<BookTicket, Long> {
 
-  DynamicArray findAll();
+  DynamicArray findByBook(Book book);
 
-  BookTicket findById(long id);
-
-  BookTicket issueTicket(User user, String part);
-
-  void returnTicket(User user, String part, BookTicket ticket);
 }

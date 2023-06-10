@@ -1,14 +1,9 @@
 package library.repository;
 
 import library.domain.User;
+import library.util.DynamicArray;
 
-public interface UserRepository {
-
-  User save(User user);
-
-  DynamicArray findAll();
-
-  User findById(long id);
+public interface UserRepository extends CrudRepository<User, Long> {
 
   /**
    *
@@ -17,5 +12,4 @@ public interface UserRepository {
    */
   User findByUsername(String username);
 
-  void delete(User user);
 }

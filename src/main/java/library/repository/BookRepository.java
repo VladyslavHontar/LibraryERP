@@ -1,20 +1,14 @@
 package library.repository;
 
 import library.domain.Book;
+import library.util.DynamicArray;
 
-public interface BookRepository {
+public interface BookRepository extends CrudRepository<Book, Long> {
 
-  Book save(Book book);
-
-  DynamicArray findAll();
-
-  Book findById(long id);
+  Book findByIsbn(String isbn);
 
   DynamicArray findByTitle(String title);
 
   DynamicArray findByAuthor(String author);
 
-  Book findByIsbn(String isbn);
-
-  void delete(Book book);
 }
