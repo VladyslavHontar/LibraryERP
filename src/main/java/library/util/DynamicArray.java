@@ -1,4 +1,4 @@
-package library.repository;
+package library.util;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
