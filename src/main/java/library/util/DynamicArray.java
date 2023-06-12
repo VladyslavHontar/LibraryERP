@@ -4,22 +4,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
 
-@NoArgsConstructor
 @ToString
-@SuppressWarnings(value = {"unused", "rawtypes"})
-public class DynamicArray implements Iterable{
-  private Object[] values = new Object[0];
-  private @Getter int size = 0;
+public class DynamicArray<E> implements Iterable<E>{
+  private E[] values;
+  private @Getter int size;
 
+  public DynamicArray() {
+    this(0);
+  }
+  public DynamicArray(int initialCapacity) {
+    //noinspection unchecked
+    values = (E[]) new Object[initialCapacity];
+    size = 0;
+  }
   /**
    * Add an element to the end of the values array
    * @param value the element to add into the values array
    * @see #add(Object, int)              
    */
-  public void add(Object value){
+  public void add(E value){
     resizeIfNeeded();
     values[size++] = value;
   }
@@ -29,7 +36,7 @@ public class DynamicArray implements Iterable{
      * @param position the position to add the element into the values array. If there is already the element at the position, the element will be shifted to the right
      * @see #resizeIfNeeded() 
      */
-  public void add(Object value, int position) {
+  public void add(E value, int position) {
     if (position > size) {
       System.err.println("IllegalPositionArgument: " + position);
     } else if (position == size) {
@@ -46,13 +53,14 @@ public class DynamicArray implements Iterable{
    * @param value the element to set into the values array
    * @param position the position to set the element into the values array. If there is already the element at the position, the element will be replaced
    */
-  public void set(Object value, int position) {
+  public void set(E value, int position) {
     if (position < 0 || position >= size) {
       System.err.println("IllegalPositionArgument: " + position);
       return;
     }
     values[position] = value;
   }
+
   /**
    * Check if the values array is empty
    * @return true if the values array is empty, false otherwise
@@ -65,12 +73,12 @@ public class DynamicArray implements Iterable{
    * @param position the position to get the element from the values array
    * @return the element at the specified position
    */
-  public Object get(int position) {
+  public E get(int position) {
     if (position < 0 || position >= size) {
       System.err.println("IllegalPositionArgument: " + position);
       return null;
     }
-    return values[position];
+    return (E) values[position];
   }
   /**
    * Remove the element at the specified position
@@ -88,7 +96,7 @@ public class DynamicArray implements Iterable{
       size--;
     }
   }
-  public void remove(Object object) {
+  public void remove(E object) {
     for (int i = 0; i < size; i++) {
       if (values[i].equals(object)) {
         remove(i);
@@ -101,7 +109,7 @@ public class DynamicArray implements Iterable{
      * @param value the element to check if it is in the values array
      * @return true if the values array contains the specified element, false otherwise
      */
-  public boolean contains(Object value) {
+  public boolean contains(E value) {
     for (Object val : values) {
       if (val.equals(value)) {
         return true;
@@ -119,8 +127,17 @@ public class DynamicArray implements Iterable{
   }
 
   @Override
+  public String toString() {
+    return Arrays.toString(values);
+  }
+
+  @Override
   public Iterator iterator() {
     return new DynamicArrayIterator();
+  }
+  public void clean() {
+    values = (E[]) new Object[0];
+    size = 0;
   }
   private class DynamicArrayIterator implements Iterator {
     private int pointer;
@@ -129,8 +146,8 @@ public class DynamicArray implements Iterable{
       return pointer != size;
     }
     @Override
-    public Object next() {
-      return values[pointer++];
+    public E next() {
+      return (E) values[pointer++];
     }
   }
 }
