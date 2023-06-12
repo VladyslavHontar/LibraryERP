@@ -6,6 +6,6 @@ import library.util.DynamicArray;
 
 public interface TicketRepository extends CrudRepository<BookTicket, Long> {
 
-  DynamicArray findByBook(Book book);
+  DynamicArray<BookTicket> findByBook(Book book);
 
 }
