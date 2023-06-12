@@ -79,7 +79,7 @@ public class LibraryService {
       System.err.println("User " + user + " returned a book: " + bookToBeReturned);
       return bookToBeReturned;
   }
-  public BookTicket takeBook(User user, Long bookId) {
+  public BookTicket takeBook(User user, long bookId) {
     System.err.println("User " + user + " trying to take a book");
     Book bookToBeTaken = bookRepository
             .findById(bookId)
@@ -90,6 +90,8 @@ public class LibraryService {
                                                         .book(bookToBeTaken)
                                                         .user(user)
                                                         .build());
+    bookToBeTaken.setCount(bookToBeTaken.getCount() - 1);
+
     System.err.println("User " + user + " took a book: " + bookToBeTaken + " with ticket: " + ticket);
     return ticket;
   }
