@@ -1,10 +1,7 @@
 package library.util;
 
-import library.Consumer;
-import library.Function;
-import library.Predicate;
-import library.domain.User;
-import library.util.CustomOptional;
+import library.v1_1.domain.User;
+import library.v1_1.util.CustomOptional;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -12,7 +9,6 @@ import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CustomOptionalTest {
   @Test
