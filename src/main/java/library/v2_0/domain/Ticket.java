@@ -1,4 +1,4 @@
-package library.domain;
+package library.v2_0.domain;
 
 import lombok.Value;
 
