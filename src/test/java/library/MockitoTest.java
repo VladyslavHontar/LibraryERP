@@ -1,8 +1,8 @@
 package library;
 
-import library.domain.User;
-import library.util.DynamicArray;
-import library.repository.UserRepository;
+import library.v1_1.domain.User;
+import library.v1_1.util.DynamicArray;
+import library.v1_1.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

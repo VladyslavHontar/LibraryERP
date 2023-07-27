@@ -1,8 +1,9 @@
 package library.service;
 
-import library.repository.BookRepository;
-import library.util.DynamicArray;
-import library.repository.TicketRepository;
+import library.v1_1.repository.BookRepository;
+import library.v1_1.service.LibraryService;
+import library.v1_1.util.DynamicArray;
+import library.v1_1.repository.TicketRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
