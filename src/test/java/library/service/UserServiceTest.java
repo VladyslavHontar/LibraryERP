@@ -1,11 +1,8 @@
 package library.service;
 
-import library.domain.Book;
-import library.domain.User;
-import library.repository.BookRepository;
-import library.util.DynamicArray;
-import library.repository.UserRepository;
-import library.repository.memory.InMemoryBookRepository;
+import library.v2_0.domain.User;
+import library.v2_0.service.UserService;
+import library.v2_0.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -15,8 +12,8 @@ import org.mockito.stubbing.Answer;
 
 import java.util.function.Consumer;
 
-import static library.domain.User.Type.ADMIN;
-import static library.domain.User.Type.MANAGER;
+import static library.v2_0.domain.User.Type.ADMIN;
+import static library.v2_0.domain.User.Type.MANAGER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,31 +53,7 @@ public class UserServiceTest {
     Mockito.verify(userRepo).save(Mockito.any());
   }
 
-  @Test
-  void getUsers() {
-    // Arrange
-    DynamicArray users = new DynamicArray();
-    users.add(User.builder().username("admin#1").type(ADMIN).build());
-    users.add(User.builder().username("admin#2").type(ADMIN).build());
-    users.add(User.builder().username("admin#3").type(ADMIN).build());
 
-    Mockito.when(userRepo.findAll()).thenReturn(users);
-
-    // Act
-    DynamicArray result = userService.getUsers();
-
-    // Assert
-    assertThat(result).allSatisfy(new Consumer() {
-      @Override
-      public void accept(Object o) {
-        User user = (User) o;
-        assertThat(user.getType()).isEqualTo(User.Type.ADMIN);
-        assertThat(user.getUsername()).startsWith("admin#");
-      }
-    });
-
-    Mockito.verify(userRepo).findAll();
-  }
 
 //  @Test
 //  void spyExample() {

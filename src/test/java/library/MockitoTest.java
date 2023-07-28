@@ -1,8 +1,7 @@
 package library;
 
-import library.v1_1.domain.User;
-import library.v1_1.util.DynamicArray;
-import library.v1_1.repository.UserRepository;
+import library.v2_0.domain.User;
+import library.v2_0.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -53,23 +52,6 @@ public class MockitoTest {
     System.out.println(repo.getClass());
     System.out.println(repo.getClass().isAssignableFrom(UserRepository.class));     //???????
     System.out.println(repo instanceof UserRepository);
-
-    UserRepository ProxyRepo = (UserRepository) Proxy.newProxyInstance(MockitoTest.class.getClassLoader(), new Class[]{UserRepository.class}, new InvocationHandler() {
-      @Override
-      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        System.out.println("Invoked: " + method + " with args: " + Arrays.toString(args));
-        if ("findAll".equals(method.getName())) {
-          return new DynamicArray();
-        } else if ("findById".equals(method.getName())) {
-          return User.builder().id((Long) args[0]).build();
-        }
-        throw new UnsupportedOperationException();
-      }
-    });
-
-    ProxyRepo.findAll();
-    ProxyRepo.findById(1743L);
-//    ProxyRepo.delete(null);
 
   }
 }

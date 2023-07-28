@@ -1,9 +1,7 @@
 package library.service;
 
-import library.v1_1.repository.BookRepository;
-import library.v1_1.service.LibraryService;
-import library.v1_1.util.DynamicArray;
-import library.v1_1.repository.TicketRepository;
+import library.v2_0.repository.BookRepository;
+import library.v2_0.service.LibraryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -22,40 +20,8 @@ public class LibraryServiceTest {
   @Mock
   private BookRepository bookRepo;
 
-  @Mock
-  private TicketRepository ticketRepo;
-
   @InjectMocks
   private LibraryService service;
 
-  @Test
-  void name() {
-    Mockito.when(bookRepo.findAll()).thenReturn(new DynamicArray());
-
-    DynamicArray books = service.getBooks();
-
-    assertThat(books).isEmpty();
-
-    Mockito.verify(bookRepo).findAll();
-    Mockito.verifyNoInteractions(ticketRepo);
-  }
-
-  @Test
-  void waitFor() {
-    new Thread(() -> {
-      try {
-        TimeUnit.SECONDS.sleep(1);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-      DynamicArray books = service.getBooks();
-    }).start();
-
-    Mockito.verify(bookRepo, Mockito.after(2000).times(1)).findAll();
-
-    InOrder inOrder = Mockito.inOrder(bookRepo);
-    inOrder.verify(bookRepo).findAll();
-//    inOrder.verify(bookRepo).findById(1);
-  }
 }
 
