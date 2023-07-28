@@ -26,7 +26,7 @@ public class LoginController implements Controller {
           return "admin_view";
 
         case CLIENT:
-          return "client_view";
+          return "user_view";
 
         case MANAGER:
           return "manager_view";
