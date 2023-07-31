@@ -3,7 +3,7 @@ package library.v2_0;
 import library.v2_0.controller.LoginController;
 import library.v2_0.controller.AdminController;
 import library.v2_0.controller.ManagerController;
-import library.v2_0.controller.UserController;
+import library.v2_0.controller.ClientController;
 import library.v2_0.domain.Book;
 import library.v2_0.domain.User;
 import library.v2_0.infrastructure.Dispatcher;
@@ -40,7 +40,7 @@ public class TerminalLauncher {
     dispatcher.addController("login_controller", new LoginController(userService));
     dispatcher.addController("admin_controller", new AdminController(userService));
     dispatcher.addController("manager_controller", new ManagerController(libraryService));
-    dispatcher.addController("user_controller", new UserController(libraryService));
+    dispatcher.addController("user_controller", new ClientController(libraryService));
     dispatcher.addView("login_view", new TerminalLoginView(terminal));
     dispatcher.addView("admin_view", new TerminalAdminView(terminal));
     dispatcher.addView("manager_view", new TerminalManagerView(terminal));
