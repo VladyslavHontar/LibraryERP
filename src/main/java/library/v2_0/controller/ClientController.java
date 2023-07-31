@@ -5,7 +5,6 @@ import library.v2_0.domain.BookTicket;
 import library.v2_0.domain.User;
 import library.v2_0.infrastructure.Model;
 import library.v2_0.service.LibraryService;
-import library.v2_0.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.LinkedHashMap;
@@ -17,7 +16,7 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
-public class UserController implements Controller {
+public class ClientController implements Controller {
 
   private final LibraryService libraryService;
 
@@ -30,31 +29,26 @@ public class UserController implements Controller {
       return "login_view";
     }
 
-    long bookId = inModel.get("bookId");
     switch (action) {
       case "takeBook":
-        libraryService.takeBook(user, bookId);
+        Object bookId = inModel.get("bookId");
+        long bookIdAsLong = (Long) bookId;
+        libraryService.takeBook(user, bookIdAsLong);
         outModel.put("response", "takeBook");
         break;
 
         case "returnBook":
-        libraryService.returnBook(user, bookId);
+        libraryService.returnBook(user, inModel.get("bookId"));
         outModel.put("response", "returnBook");
         break;
 
-      case "findBook":
-        Map<String, String> filters = inModel.get("filters");
-        Predicate<Book> bookFilter = filters.entrySet()
-                                            .stream()
-                                            .map(entry -> getFilterForProperty(entry.getKey(), entry.getValue()))
-                                            .reduce($ -> true, Predicate::and);
-
-        Map<Book, List<BookTicket>> booksWithTickets = libraryService.findBooksBy(bookFilter)
+      case "listBooks":
+        Map<Book, List<BookTicket>> booksWithTickets = libraryService.getBooks()
                                                                      .stream()
                                                                      .collect(toMap(identity(), libraryService::getBookTickets, ($,$$) -> null, LinkedHashMap::new));
 
         outModel.put("booksWithTickets", booksWithTickets);
-        outModel.put("response", "showBooks");
+        outModel.put("response", "listBooks");
         break;
     }
     return "user_view";
