@@ -23,12 +23,12 @@ public class TerminalClientView implements View {
   private final Map<String, Consumer<Model>> responseHandlers = Map.of(
           "takeBook", this::takeBook,
           "returnBook", this::returnBook,
-          "findBook", this::findBook
+          "listBooks", this::listBooks
                                                                       );
   private final Map<String, BiFunction<Model, String[], String>> commands = new LinkedHashMap<>(){{
     put("TAKE_BOOK", TerminalClientView.this::commandTakeBook);
     put("RETURN_BOOK", TerminalClientView.this::commandReturnBook);
-    put("FIND_BOOK", TerminalClientView.this::commandFindBook);
+    put("LIST_BOOKS", TerminalClientView.this::commandListBooks);
   }};
 
   @Override
@@ -48,34 +48,8 @@ public class TerminalClientView implements View {
     return target;
   }
 
-  private String commandFindBook(Model model, String...arguments) {
-    Map<String, String> filters = new HashMap<>();
-    if (arguments.length > 1) {
-      for (String filter : arguments[1].split("&")) {
-        String[] filterParts = filter.split("=");
-        String filterName = filterParts[0];
-        String filterValue = filterParts[1];
-        switch (filterName) {
-          case "isbn":
-            filters.put("isbn", filterValue);
-            break;
-
-          case "title":
-            filters.put("title", filterValue);
-            break;
-
-          case "author":
-            filters.put("author", filterValue);
-            break;
-
-          case "year":
-            filters.put("year", filterValue);
-            break;
-        }
-      }
-    }
-    model.put("filters", filters);
-    model.put("action", "showBooks");
+  private String commandListBooks(Model model, String...arguments) {
+    model.put("action", "listBooks");
     return USER_CONTROLLER;
   }
 
@@ -97,7 +71,7 @@ public class TerminalClientView implements View {
     return USER_CONTROLLER;
   }
 
-  private void findBook(Model model) {
+  private void listBooks(Model model) {
     Map<Book, List<BookTicket>> booksWithTickets = model.get("booksWithTickets");
 
     if (booksWithTickets.isEmpty()) {
