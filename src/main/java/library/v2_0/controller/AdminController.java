@@ -29,7 +29,7 @@ public class AdminController implements Controller {
 
       case "addUser":
         String username = inModel.get("username");
-        String password = inModel.get("password");
+        char[] password = inModel.get("password");
         User.Type type = User.Type.valueOf(inModel.get("type"));
 
         try {
