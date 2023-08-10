@@ -16,7 +16,7 @@ public class LoginController implements Controller {
   @Override
   public String handle(Model inModel, Model outModel) {
     String username = inModel.get("username");
-    String password = inModel.get("password");
+    char[] password = inModel.get("password");
 
     try {
       User authenticatedUser = userService.authenticate(username, password);
