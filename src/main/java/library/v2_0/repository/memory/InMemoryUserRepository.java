@@ -23,7 +23,7 @@ public class InMemoryUserRepository implements UserRepository {
     if (id > 0) {
       User updatedUser = findById(id).orElseThrow(() -> new IllegalArgumentException("Cannot find a user ticket with ID=" + id));
       updatedUser.setUsername(user.getUsername());
-      updatedUser.setPassword(user.getPassword());
+      updatedUser.setPasswordHash(user.getPasswordHash());
       log.debug("User has been updated [{}]", updatedUser);
       return updatedUser;
     } else {
