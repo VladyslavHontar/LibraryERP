@@ -11,7 +11,7 @@ public class User {
 
   long id;
   String username;
-  String password;
+  String passwordHash;
   Type type;
   Ticket ticket;
 
@@ -25,7 +25,8 @@ public class User {
   public String toString() {
     return "User{" +
             "id=" + id +
-            ", username " + username + "\'" +
+            ", username " + username +
+            ", passwordHash=" + passwordHash  +
             ", type=" + type +
             '}';
   }
