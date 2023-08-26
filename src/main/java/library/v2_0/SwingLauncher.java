@@ -1,12 +1,14 @@
 package library.v2_0;
 
 import library.v2_0.controller.AdminController;
+import library.v2_0.controller.ClientController;
 import library.v2_0.controller.LoginController;
 import library.v2_0.infrastructure.Dispatcher;
 import library.v2_0.infrastructure.Model;
 import library.v2_0.repository.jdbc.DataSourceFactory;
 import library.v2_0.repository.jdbc.DataSource;
 import library.v2_0.repository.jdbc.JdbcUserRepository;
+import library.v2_0.service.LibraryService;
 import library.v2_0.service.UserService;
 import library.v2_0.view.swing.SwingAdminView;
 import library.v2_0.view.swing.SwingLoginView;
@@ -23,10 +25,12 @@ public class SwingLauncher {
     JdbcUserRepository userRepository = new JdbcUserRepository(dataSource);
 
     UserService userService = new UserService(userRepository);
+    LibraryService libraryService = new LibraryService();
 
     Dispatcher dispatcher = new Dispatcher();
     dispatcher.addController("login_controller", new LoginController(userService));
     dispatcher.addController("admin_controller", new AdminController(userService));
+    dispatcher.addController("client_controller", new ClientController(libraryService));
 
     SwingUtilities.invokeLater(() -> {
       JFrame frame = new JFrame("Library ERP");
