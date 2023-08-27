@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 public interface BookRepository extends Repository<Book, Long> {
 
-  List<Book> findByTitle(String title);
+  Optional<Book> findByTitle(String title);
 
   Optional<Book> findByIsbn(String isbn);
 

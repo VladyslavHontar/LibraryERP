@@ -50,7 +50,7 @@ public class InMemoryBookRepository implements BookRepository {
   }
 
   @Override
-  public List<Book> findByTitle(String title) {
+  public Optional<Book> findByTitle(String title) {
     return streamFindBy(book -> book.getTitle().equals(title)).collect(toList());
   }
 
