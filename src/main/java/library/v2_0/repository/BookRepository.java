@@ -11,7 +11,5 @@ public interface BookRepository extends Repository<Book, Long> {
 
   Optional<Book> findByIsbn(String isbn);
 
-  List<Book> findByAuthor(String author);
-
-  List<Book> findBy(Predicate<Book> predicate);
+  Optional<Book> findByAuthor(String author);
 }
